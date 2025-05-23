@@ -1,0 +1,605 @@
+ <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8 Meses de Amor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff80bf;
+            --accent-color: #8a5fff;
+            --bg-gradient-1: #2b1055;
+            --bg-gradient-2: #7597de;
+            --text-color: #fff;
+            --text-shadow: 0 0 12px rgba(255, 128, 191, 0.5);
+            --card-bg: rgba(20, 10, 40, 0.75);
+            --card-border: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Removido estilos de controle de áudio */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to bottom, var(--bg-gradient-1), var(--bg-gradient-2));
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            perspective: 1000px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards 0.5s;
+        }
+        
+        /* Loader */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gradient-1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .loader {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .loader-duck {
+            position: absolute;
+            width: 80px;
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        .loader-text {
+            font-family: 'Dancing Script', cursive;
+            position: absolute;
+            bottom: -40px;
+            width: 100%;
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            text-shadow: var(--text-shadow);
+            opacity: 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Layout and Structure */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 3rem;
+            overflow: hidden;
+        }
+        
+        .duck-image {
+            width: 30%;
+            max-width: 200px;
+            margin-bottom: 2rem;
+            animation: float 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+            position: relative;
+            z-index: 5;
+            display: none;
+        }
+        
+        .tiktok-container {
+            position: relative;
+            width: 100%;
+            max-width: 325px;
+            height: 580px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards 2s;
+        }
+        
+        .tiktok-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Background Elements */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: twinkle var(--duration) linear infinite var(--delay);
+        }
+        
+        .circle-decoration {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(255,128,191,0.3) 0%, rgba(138,95,255,0.1) 70%, transparent 100%);
+            filter: blur(10px);
+            z-index: -1;
+        }
+        
+        .circle-1 {
+            top: 20%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            animation: float 13s ease-in-out infinite;
+            opacity: 0.7;
+        }
+        
+        .circle-2 {
+            bottom: 10%;
+            right: 5%;
+            width: 300px;
+            height: 300px;
+            animation: float 17s ease-in-out infinite reverse;
+            opacity: 0.5;
+        }
+        
+        /* Typography */
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-shadow: var(--text-shadow);
+            opacity: 0;
+            animation: slideUp 1s ease-out forwards 1s;
+        }
+        
+        .message-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            border: 1px solid var(--card-border);
+            padding: 2.5rem;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards 1.5s, float 10s ease-in-out infinite;
+            max-width: 600px;
+            transform: translateZ(20px);
+            position: relative;
+            z-index: 4;
+        }
+        
+        .message-card::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color), transparent, transparent);
+            border-radius: 1.8rem;
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(10px);
+        }
+        
+        .greeting {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            opacity: 0;
+            animation: typewriter 2s steps(40) forwards 2s;
+        }
+        
+        .message-text {
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards 2.5s;
+        }
+        
+        .message-text:last-child {
+            margin-bottom: 0;
+        }
+        
+        .highlight {
+            color: var(--primary-color);
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease-out;
+        }
+        
+        .highlight:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .footer-text {
+            font-family: 'Dancing Script', cursive;
+            position: absolute;
+            bottom: 2rem;
+            font-size: 1.5rem;
+            width: 100%;
+            text-align: center;
+            color: var(--primary-color);
+            text-shadow: var(--text-shadow);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards 3s;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) translateZ(0);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) translateZ(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateZ(0) rotate(0deg); }
+            50% { transform: translateY(-15px) translateZ(20px) rotate(1deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 0.5; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.8; }
+        }
+        
+        @keyframes typewriter {
+            from { 
+                width: 0;
+                opacity: 0;
+            }
+            to { 
+                width: 100%;
+                opacity: 1;
+            }
+        }
+        
+        /* Floating Hearts */
+        .floating-element {
+            position: fixed;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            z-index: 3;
+            pointer-events: none;
+            animation: floatUp var(--duration) linear forwards;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0.5);
+            }
+            10% {
+                opacity: var(--opacity);
+            }
+            90% {
+                opacity: var(--opacity);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(1.2);
+            }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .left-section,
+            .right-section {
+                padding: 2rem;
+                min-height: 50vh;
+            }
+            
+            .title {
+                font-size: 3rem;
+                text-align: center;
+            }
+            
+            .duck-image {
+                width: 25%;
+                margin-top: 2rem;
+            }
+            
+            .circle-1 {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .circle-2 {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .footer-text {
+                position: relative;
+                margin-top: 2rem;
+                padding-bottom: 1rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .message-card {
+                padding: 1.5rem;
+            }
+            
+            .greeting {
+                font-size: 1.2rem;
+            }
+            
+            .message-text {
+                font-size: 0.9rem;
+            }
+            
+            .duck-image {
+                width: 30%;
+            }
+            
+            .footer-text {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Animation -->
+    <div class="loader-container">
+        <div class="loader">
+            <img src="images/cute_cartoon_yellow_rubber_duck.png" alt="Patinho" class="loader-duck">
+            <div class="loader-text">Carregando...</div>
+        </div>
+    </div>
+    
+    <!-- Stars Background -->
+    <div class="stars-container"></div>
+    
+    <!-- Decorative Circles -->
+    <div class="circle-decoration circle-1"></div>
+    <div class="circle-decoration circle-2"></div>
+    
+    <!-- TikTok vídeo será adicionado na seção direita -->
+    
+    <main class="main-container">
+        <section class="left-section">
+            <h1 class="title">Feliz 8 meses, meu amor 💗</h1>
+            
+            <div class="message-card">
+                <p class="greeting">Ei, meu amor 😍</p>
+                
+                <p class="message-text">Tem dias em que eu tô bravo, cansado ou só com a cabeça cheia. Mas aí eu falo com você, e tudo muda. De verdade. Parece que só de ouvir tua voz ou ler uma mensagem sua, o mundo fica mais leve.</p>
+                
+                <p class="message-text">É louco como você tem esse <span class="highlight">poder</span> sobre mim — o poder de me acalmar, de me fazer sorrir mesmo sem motivo, de lembrar que tá tudo bem — porque eu tenho você.</p>
+                
+                <p class="message-text">Amar você me faz bem. Não é só sobre ser amado — é sobre amar você. Porque quando eu amo, eu me sinto mais vivo, mais inteiro, mais eu. E quando tô com você, até os dias ruins viram dias que eu guardo com carinho, porque foram com você. (mentiraaa o dia era ruim até a gente se ver, não tem dia ruim ao seu lado.)</p>
+                
+                <p class="message-text">Hoje a gente completa 8 meses. 8 meses de risadas, carinho, conversas bobas e momentos que eu nunca quero esquecer. E aí você me manda um vídeo dizendo que só de saber que a patinha dele gosta dele, ele já se sente feliz e eu me vi ali. Porque eu também fico feliz só de saber que minha <span class="highlight">patinha</span> me ama. Só isso já muda tudo.</p>
+                
+                <p class="message-text">Obrigado por ser meu lugar de paz, meu drama bom, minha sorte de todo dia. E claro também por ser aquela que sabe exatamente como me deixar sem fôlego com um beijo, um olhar ou somente por ser você (extremamente linda e gostosa do jeitinho que eu amo)</p>
+                
+                <p class="message-text">Te amo com tudo o que sou,</p>
+            </div>
+        </section>
+        
+        <section class="right-section">
+            <img src="images/cute_cartoon_yellow_rubber_duck.png" alt="Patinho" class="duck-image">
+            <div class="tiktok-container">
+                <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@guiigui009/video/7505984750658555142" data-video-id="7505984750658555142">
+                    <section>
+                        <a target="_blank" href="https://www.tiktok.com/@guiigui009"></a>
+                    </section>
+                </blockquote>
+                <script async src="https://www.tiktok.com/embed.js"></script>
+            </div>
+        </section>
+        
+        <footer class="footer-text">
+            Do seu patinho, pra minha patinha mais mais 🐥💗
+        </footer>
+    </main>
+    
+    <script>
+        // Create stars background
+        function createStars() {
+            const starsContainer = document.querySelector('.stars-container');
+            const starsCount = 200;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random star properties
+                const size = Math.random() * 3 + 1;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const duration = Math.random() * 5 + 3;
+                const delay = Math.random() * 5;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                star.style.setProperty('--duration', `${duration}s`);
+                star.style.setProperty('--delay', `${delay}s`);
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Create floating elements (hearts, stars, etc)
+        function createFloatingElements() {
+            const symbols = ['💗', '✨', '💫', '🐥'];
+            const container = document.body;
+            
+            function createElement() {
+                const element = document.createElement('div');
+                element.classList.add('floating-element');
+                
+                // Random properties
+                const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+                const size = Math.random() * 1 + 0.5;
+                const posX = Math.random() * 100;
+                const duration = Math.random() * 10 + 8;
+                const opacity = Math.random() * 0.4 + 0.2;
+                
+                element.textContent = symbol;
+                element.style.left = `${posX}%`;
+                element.style.fontSize = `${size}rem`;
+                element.style.setProperty('--duration', `${duration}s`);
+                element.style.setProperty('--opacity', opacity);
+                
+                container.appendChild(element);
+                
+                // Remove after animation completes
+                setTimeout(() => {
+                    element.remove();
+                    createElement();
+                }, duration * 1000);
+            }
+            
+            // Create initial elements
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    createElement();
+                }, i * 800);
+            }
+        }
+        
+        // Parallax effect
+        function handleParallax() {
+            document.addEventListener('mousemove', (e) => {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                
+                const title = document.querySelector('.title');
+                const messageCard = document.querySelector('.message-card');
+                const duckImage = document.querySelector('.duck-image');
+                
+                title.style.transform = `translateX(${xAxis * 0.5}px) translateY(${yAxis * 0.5}px)`;
+                messageCard.style.transform = `translateX(${xAxis * 0.3}px) translateY(${yAxis * 0.3}px) translateZ(20px)`;
+                duckImage.style.transform = `translateX(${-xAxis * 0.8}px) translateY(${-yAxis * 0.8}px) rotate(${xAxis * 0.5}deg)`;
+            });
+        }
+        
+        // Loading animation
+        function handleLoader() {
+            const loader = document.querySelector('.loader-container');
+            
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 500);
+                }, 1500);
+            });
+        }
+        
+        // TikTok vídeo embed já está configurado no HTML
+        function setupTikTok() {
+            // O script do TikTok cuidará da incorporação automaticamente
+            // Esta função está aqui para possíveis futuras personalizações
+        }
+
+        // Initialize everything
+        window.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            createFloatingElements();
+            handleParallax();
+            handleLoader();
+            setupTikTok();
+            
+            document.body.style.opacity = '1';
+        });
+    </script>
+</body>
+</html>
